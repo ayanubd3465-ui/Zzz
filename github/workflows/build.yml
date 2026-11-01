@@ -1,0 +1,29 @@
+name: Build exe
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - terabox_drive.py
+      - .github/workflows/build.yml
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install pyinstaller fusepy requests
+
+      - name: Build exe
+        run: pyinstaller --onefile --hidden-import fuse terabox_drive.py
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: terabox_drive
+          path: dist/terabox_drive.exe
